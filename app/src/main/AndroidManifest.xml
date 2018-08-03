@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.changf.glide">
+    package="com.changf.photo">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- 向SD卡中创建或者删除的权限。 -->
@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
+        android:name=".PhotoWallApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -26,6 +27,7 @@
 
         <activity android:name="com.changf.photo.TwoLevelBufferActivity"/>
         <activity android:name="com.changf.photo.ThreeLevelBufferActivity"/>
+        <activity android:name="com.changf.photo.BigPhotoActivity"/>
 
     </application>
 

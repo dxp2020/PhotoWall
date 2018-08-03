@@ -1,7 +1,6 @@
 package com.changf.photo.core;
 
 import android.graphics.Bitmap;
-import android.util.LruCache;
 
 public class BitmapMemory {
     /**
@@ -31,6 +30,9 @@ public class BitmapMemory {
      *            LruCache的键，这里传入从网络上下载的Bitmap对象。
      */
     public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+        if(key==null||bitmap==null){
+            return;
+        }
         if (getBitmapFromMemoryCache(key) == null) {
             mMemoryCache.put(key, bitmap);
         }

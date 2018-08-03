@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.changf.glide.R;
 import com.changf.photo.adapter.PhotoWallAdapter;
 import com.changf.photo.core.BitmapDecoder;
 import com.changf.photo.core.BitmapMemory;

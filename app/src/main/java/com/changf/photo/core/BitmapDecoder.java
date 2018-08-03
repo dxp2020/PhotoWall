@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Looper;
 import android.util.Base64;
+import android.util.Log;
 
 import com.changf.photo.util.FileCacheUtils;
 
@@ -56,7 +57,6 @@ public class BitmapDecoder {
             bitmapMemory.addBitmapToMemoryCache(path,bitmap);
             return bitmap;
         }else{
-            //从网络加载并缓存到本地
             boolean isCached = cacheDataToDisk(load());
             if (isCached) {
                 return decode();
@@ -72,7 +72,7 @@ public class BitmapDecoder {
      * @return
      */
     private Bitmap load(){
-        if(imageUrl.startsWith("http://")||imageUrl.startsWith("HTTP://")){
+        if(imageUrl.startsWith("http")||imageUrl.startsWith("HTTP")){
             return loadDataFromNetwork();
         }else{
             return loadDataFromDisk();
@@ -84,7 +84,6 @@ public class BitmapDecoder {
      * @return
      */
     private Bitmap loadDataFromDisk() {
-        path = imageUrl;
         return null;
     }
 
@@ -151,9 +150,7 @@ public class BitmapDecoder {
      */
     private  boolean cacheDataToDisk(Bitmap bitmap){
         try {
-            if(imageUrl.equals(path)){
-                return true;
-            }else if(bitmap==null){
+            if(bitmap==null){
                 return false;
             }else{
                 FileOutputStream fileOutputStream=new FileOutputStream(path);
@@ -193,7 +190,10 @@ public class BitmapDecoder {
      * @return
      */
     private  String getPhotoPath(Context context,String url) {
-        return FileCacheUtils.getCacheDir(context).getAbsolutePath()+"/"+ new String(Base64.encode(url.getBytes(),Base64.DEFAULT))+".png";
+        if(url.startsWith("http")||url.startsWith("HTTP")){
+            return FileCacheUtils.getCacheDir(context).getAbsolutePath()+"/"+ new String(Base64.encode(url.getBytes(),Base64.DEFAULT))+".png";
+        }
+        return url;
     }
 
     private boolean isDecodingFromCache() {

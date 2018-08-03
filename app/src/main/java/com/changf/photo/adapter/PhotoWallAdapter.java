@@ -13,9 +13,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.changf.glide.R;
+import com.changf.photo.PhotoWallApplication;
+import com.changf.photo.R;
 import com.changf.photo.core.BitmapDecoder;
-import com.changf.photo.core.BitmapMemory;
 import com.changf.photo.util.ViewUtils;
 
 import java.util.ArrayList;
@@ -60,26 +60,13 @@ public class PhotoWallAdapter extends BaseAdapter implements OnScrollListener {
     private int photoHeight;
 
     /**
-     * bitmap缓存操作类
-     */
-    private BitmapMemory mBitmapMemory;
-
-    /**
      * 图片的url
      */
     private List<String> dataSource = new ArrayList<>();
 
-    private String[] getData(List<String> data){
-        String[] objects = new String[data.size()];
-        for(int i=0;i<data.size();i++){
-            objects[i] = data.get(i);
-        }
-        return objects;
-    }
 
     private void init(Context context,GridView photoWall){
         this.context = context;
-        mBitmapMemory = new BitmapMemory();
         mPhotoWall = photoWall;
         taskCollection = new HashSet<BitmapWorkerTask>();
         mPhotoWall.setOnScrollListener(this);
@@ -212,7 +199,7 @@ public class PhotoWallAdapter extends BaseAdapter implements OnScrollListener {
     }
 
     private BitmapDecoder getBitmapDecoder(String imageUrl){
-        return new BitmapDecoder(context, mBitmapMemory, imageUrl, photoWidth, photoHeight);
+        return new BitmapDecoder(context, PhotoWallApplication.getInstance().getBitmapMemory(), imageUrl, photoWidth, photoHeight);
     }
 
     private Bitmap decode(String imageUrl){
@@ -227,13 +214,12 @@ public class PhotoWallAdapter extends BaseAdapter implements OnScrollListener {
             for (BitmapWorkerTask task : taskCollection) {
                 task.cancel(false);
             }
+            taskCollection.clear();
         }
     }
 
     /**
      * 异步下载图片的任务。
-     *
-     * @author guolin
      */
     class BitmapWorkerTask extends AsyncTask<BitmapDecoder, Void, Bitmap> {
         /**

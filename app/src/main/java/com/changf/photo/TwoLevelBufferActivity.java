@@ -1,24 +1,24 @@
 package com.changf.photo;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.changf.glide.R;
 import com.changf.photo.adapter.PhotoWallAdapter;
-import com.changf.photo.data.Images;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TwoLevelBufferActivity extends Activity {
     private GridView mPhotoWall;
     private PhotoWallAdapter adapter;
-    private List<String> fileNames = new ArrayList<>();
+    private ArrayList<String> fileNames = new ArrayList<>();
 
     private Handler handler = new Handler(){
         @Override
@@ -42,6 +42,15 @@ public class TwoLevelBufferActivity extends Activity {
         setContentView(R.layout.layout_photo_wall);
         mPhotoWall = findViewById(R.id.photo_wall);
 
+        mPhotoWall.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent intent = new Intent(TwoLevelBufferActivity.this,BigPhotoActivity.class);
+                intent.putStringArrayListExtra("photos",fileNames);
+                intent.putExtra("position",position);
+                startActivity(intent);
+            }
+        });
         adapter = new PhotoWallAdapter(this, fileNames, mPhotoWall);
 
         loadPhoneAllPhoto();
