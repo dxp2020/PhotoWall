@@ -20,6 +20,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 public class BitmapDecoder {
+    private static final String TAG = "BitmapDecoder";
+
     private Context context;
     private BitmapMemory bitmapMemory;
     private String remoteUrl;

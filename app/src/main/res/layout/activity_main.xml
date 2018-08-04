@@ -7,15 +7,22 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="三级缓存测试"
+        android:text="三级缓存照片墙"
         android:onClick="threeLevelBuffer"
         />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="二级缓存测试"
+        android:text="二级缓存照片墙"
         android:onClick="twoLevelBuffer"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="瀑布流"
+        android:onClick="fallsPhotoWall"
         />
 
 </LinearLayout>

@@ -28,6 +28,7 @@
         <activity android:name="com.changf.photo.TwoLevelBufferActivity"/>
         <activity android:name="com.changf.photo.ThreeLevelBufferActivity"/>
         <activity android:name="com.changf.photo.BigPhotoActivity"/>
+        <activity android:name="com.changf.photo.FallsPhotoWallActivity"/>
 
     </application>
 

@@ -27,6 +27,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
     }
 
+    public void fallsPhotoWall(View view){
+        startActivity(new Intent(this,FallsPhotoWallActivity.class));
+    }
     public void threeLevelBuffer(View view){
         startActivity(new Intent(this,ThreeLevelBufferActivity.class));
     }
