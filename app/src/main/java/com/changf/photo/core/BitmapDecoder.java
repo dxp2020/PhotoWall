@@ -22,19 +22,21 @@ import java.net.URLEncoder;
 public class BitmapDecoder {
     private Context context;
     private BitmapMemory bitmapMemory;
-    private String imageUrl;
-    private String path;
+    private String remoteUrl;
+    private String localUrl;
+    private String key;
     private int reqWidth;
     private int reqHeight;
     private Stage stage;
 
-    public BitmapDecoder(Context context, BitmapMemory bitmapMemory,String imageUrl, int reqWidth, int reqHeight) {
+    public BitmapDecoder(Context context, BitmapMemory bitmapMemory,String remoteUrl, int reqWidth, int reqHeight) {
         this.context = context;
         this.bitmapMemory = bitmapMemory;
-        this.imageUrl = imageUrl;
+        this.remoteUrl = remoteUrl;
         this.reqWidth = reqWidth;
         this.reqHeight = reqHeight;
-        this.path = getPhotoPath(context,imageUrl);
+        this.localUrl = getLocalUrl();
+        this.key = getKey();
         this.stage = Stage.CACHE;
     }
 
@@ -51,10 +53,10 @@ public class BitmapDecoder {
      * @return
      */
     private Bitmap decodeFromSource() {
-        File  file = new File(path);
+        File  file = new File(localUrl);
         if(file.exists()){
-            Bitmap bitmap = decodeFromSource(path,reqWidth,reqHeight);
-            bitmapMemory.addBitmapToMemoryCache(path,bitmap);
+            Bitmap bitmap = decodeFromSource(localUrl,reqWidth,reqHeight);
+            bitmapMemory.addBitmapToMemoryCache(key,bitmap);
             return bitmap;
         }else{
             boolean isCached = cacheDataToDisk(load());
@@ -72,7 +74,7 @@ public class BitmapDecoder {
      * @return
      */
     private Bitmap load(){
-        if(imageUrl.startsWith("http")||imageUrl.startsWith("HTTP")){
+        if(remoteUrl.startsWith("http")||remoteUrl.startsWith("HTTP")){
             return loadDataFromNetwork();
         }else{
             return loadDataFromDisk();
@@ -95,7 +97,7 @@ public class BitmapDecoder {
         Bitmap bitmap = null;
         HttpURLConnection con = null;
         try {
-            URL url = new URL(imageUrl);
+            URL url = new URL(remoteUrl);
             con = (HttpURLConnection) url.openConnection();
             con.setConnectTimeout(5 * 1000);
             con.setReadTimeout(10 * 1000);
@@ -113,7 +115,7 @@ public class BitmapDecoder {
     }
 
     private  Bitmap decodeFromCache() {
-        Bitmap  bitmap =  bitmapMemory.getBitmapFromMemoryCache(path);
+        Bitmap  bitmap =  bitmapMemory.getBitmapFromMemoryCache(key);
         if(bitmap!=null){
             return bitmap;
         }else{
@@ -153,7 +155,7 @@ public class BitmapDecoder {
             if(bitmap==null){
                 return false;
             }else{
-                FileOutputStream fileOutputStream=new FileOutputStream(path);
+                FileOutputStream fileOutputStream=new FileOutputStream(localUrl);
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100,fileOutputStream);
                 fileOutputStream.close();
             }
@@ -185,15 +187,22 @@ public class BitmapDecoder {
 
     /**
      * 获取本地图片缓存路径
-     * @param context
-     * @param url
      * @return
      */
-    private  String getPhotoPath(Context context,String url) {
-        if(url.startsWith("http")||url.startsWith("HTTP")){
-            return FileCacheUtils.getCacheDir(context).getAbsolutePath()+"/"+ new String(Base64.encode(url.getBytes(),Base64.DEFAULT))+".png";
+    private  String getLocalUrl() {
+        if(remoteUrl.startsWith("http")||remoteUrl.startsWith("HTTP")){
+            return FileCacheUtils.getCacheDir(context).getAbsolutePath()+"/"+ new String(Base64.encode(remoteUrl.getBytes(),Base64.DEFAULT))+".png";
+        }else{
+            return remoteUrl;
         }
-        return url;
+    }
+
+    /**
+     * 生成内存缓存的KEY
+     * @return
+     */
+    private String getKey() {
+        return new String(Base64.encode((remoteUrl).getBytes(),Base64.DEFAULT))+reqWidth+"-"+reqHeight;
     }
 
     private boolean isDecodingFromCache() {
@@ -201,7 +210,7 @@ public class BitmapDecoder {
     }
 
     public String getImageUrl() {
-        return imageUrl;
+        return remoteUrl;
     }
 
     private enum Stage {

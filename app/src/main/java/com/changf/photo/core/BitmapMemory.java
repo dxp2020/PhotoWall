@@ -1,8 +1,10 @@
 package com.changf.photo.core;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 public class BitmapMemory {
+    private static final String TAG = "BitmapMemory";
     /**
      * 图片缓存技术的核心类，用于缓存所有下载好的图片，在程序内存达到设定值时会将最少最近使用的图片移除掉。
      */

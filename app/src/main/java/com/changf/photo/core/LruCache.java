@@ -171,8 +171,7 @@ public class LruCache<K, V> {
                     throw new IllegalStateException(getClass().getName()
                             + ".sizeOf() is reporting inconsistent results!");
                 }
-                Log.e(TAG,String.valueOf(size/1024/1024)+"M");
-                printAllKey();
+                Log.e(TAG,size/1024/1024+"M----MAX:"+maxSize/1024/1024+"M");
                 if (size <= maxSize || map.isEmpty()) {
                     break;
                 }
@@ -183,16 +182,7 @@ public class LruCache<K, V> {
                 size -= safeSizeOf(key, value);
                 evictionCount++;
             }
-
             entryRemoved(true, key, value, null);
-        }
-    }
-
-    private void printAllKey(){
-        Iterator iterator = map.entrySet().iterator();
-        while(iterator.hasNext()){
-            String key = iterator.next().toString();
-            Log.e(TAG,"key--->"+key);
         }
     }
 
