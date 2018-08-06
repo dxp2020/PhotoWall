@@ -171,7 +171,7 @@ public class LruCache<K, V> {
                     throw new IllegalStateException(getClass().getName()
                             + ".sizeOf() is reporting inconsistent results!");
                 }
-                Log.e(TAG,size/1024/1024+"M----MAX:"+maxSize/1024/1024+"M");
+//                Log.e(TAG,size/1024/1024+"M----MAX:"+maxSize/1024/1024+"M");
                 if (size <= maxSize || map.isEmpty()) {
                     break;
                 }

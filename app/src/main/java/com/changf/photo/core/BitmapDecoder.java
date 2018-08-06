@@ -29,6 +29,8 @@ public class BitmapDecoder {
     private String key;
     private int reqWidth;
     private int reqHeight;
+    private int outWidth;
+    private int outHeight;
     private Stage stage;
 
     public BitmapDecoder(Context context, BitmapMemory bitmapMemory,String remoteUrl, int reqWidth, int reqHeight) {
@@ -37,6 +39,16 @@ public class BitmapDecoder {
         this.remoteUrl = remoteUrl;
         this.reqWidth = reqWidth;
         this.reqHeight = reqHeight;
+        this.localUrl = getLocalUrl();
+        this.key = getKey();
+        this.stage = Stage.CACHE;
+    }
+
+    public BitmapDecoder(Context context, BitmapMemory bitmapMemory,String remoteUrl, int reqWidth) {
+        this.context = context;
+        this.bitmapMemory = bitmapMemory;
+        this.remoteUrl = remoteUrl;
+        this.reqWidth = reqWidth;
         this.localUrl = getLocalUrl();
         this.key = getKey();
         this.stage = Stage.CACHE;
@@ -119,6 +131,8 @@ public class BitmapDecoder {
     private  Bitmap decodeFromCache() {
         Bitmap  bitmap =  bitmapMemory.getBitmapFromMemoryCache(key);
         if(bitmap!=null){
+            outWidth = bitmap.getWidth();
+            outHeight = bitmap.getHeight();
             return bitmap;
         }else{
             if(Looper.myLooper()==Looper.getMainLooper()){
@@ -136,13 +150,18 @@ public class BitmapDecoder {
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
-        if (height > reqHeight || width > reqWidth) {
+        //宽、高都不为0的情况，以宽高来得出采样率
+        if ((reqWidth!=0&&reqHeight!=0)&&(height > reqHeight || width > reqWidth)) {
             // 计算出实际宽高和目标宽高的比率
             final int heightRatio = Math.round((float) height / (float) reqHeight);
             final int widthRatio = Math.round((float) width / (float) reqWidth);
             // 选择宽和高中最小的比率作为inSampleSize的值，这样可以保证最终图片的宽和高
             // 一定都会大于等于目标的宽和高。
             inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        //高度为零的情况下，以宽度来获取采样率
+        }else if(reqHeight==0){
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            inSampleSize = widthRatio;
         }
         return inSampleSize;
     }
@@ -180,10 +199,18 @@ public class BitmapDecoder {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path, options);
-        // 调用上面定义的方法计算inSampleSize值
+        // 根据已知宽高和期望宽高计算inSampleSize值
         options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
         // 使用获取到的inSampleSize值再次解析图片
         options.inJustDecodeBounds = false;
+        //图片解析出错，inSampleSize为0的时候，默认取期望的宽度作为宽高
+        if(options.inSampleSize==0){
+            outWidth = reqWidth;
+            outHeight = reqWidth;
+        }else{
+            outWidth = options.outWidth/options.inSampleSize;
+            outHeight = options.outHeight/options.inSampleSize;
+        }
         return BitmapFactory.decodeFile(path, options);
     }
 
@@ -213,6 +240,22 @@ public class BitmapDecoder {
 
     public String getImageUrl() {
         return remoteUrl;
+    }
+
+    public int getOutWidth() {
+        return outWidth;
+    }
+
+    public void setOutWidth(int outWidth) {
+        this.outWidth = outWidth;
+    }
+
+    public int getOutHeight() {
+        return outHeight;
+    }
+
+    public void setOutHeight(int outHeight) {
+        this.outHeight = outHeight;
     }
 
     private enum Stage {

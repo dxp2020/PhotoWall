@@ -21,8 +21,15 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="瀑布流"
-        android:onClick="fallsPhotoWall"
+        android:text="三级缓存瀑布流"
+        android:onClick="fallsPhotoWall3"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="二级缓存瀑布流"
+        android:onClick="fallsPhotoWall2"
         />
 
 </LinearLayout>

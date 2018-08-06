@@ -7,13 +7,6 @@
     <com.changf.photo.view.FallsPhotoWallView
         android:id="@+id/sv_photo_wall"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="添加"
-        android:onClick="add"
+        android:layout_height="match_parent"
         />
 </LinearLayout>

@@ -18,6 +18,7 @@ import com.changf.photo.util.ViewUtils;
 import com.changf.photo.view.ZoomImageView;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -129,5 +130,24 @@ public class BigPhotoActivity extends Activity {
 
     }
 
+    /**
+     * 取消所有正在下载或等待下载的任务。
+     */
+    public void cancelAllTasks() {
+        if (taskCollection != null) {
+            Iterator iterator = taskCollection.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, BitmapWorkerTask> toEvict = (Map.Entry<String, BitmapWorkerTask>) iterator.next();
+                BitmapWorkerTask task = toEvict.getValue();
+                task.cancel(false);
+            }
+            taskCollection.clear();
+        }
+    }
 
+    @Override
+    protected void onDestroy() {
+        cancelAllTasks();
+        super.onDestroy();
+    }
 }
