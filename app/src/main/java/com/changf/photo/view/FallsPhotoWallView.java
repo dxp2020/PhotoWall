@@ -120,9 +120,6 @@ public class FallsPhotoWallView extends ScrollView implements View.OnTouchListen
                             loadMorePhotos();
                         }
                     }else{
-                        //滚动状态停止一切加载行为
-                        cancelAllTasks();
-
                         lastY = getScrollY();
                         //delayMillis值越大越精确，值越小getScrollY可能不准
                         handler.sendEmptyMessageDelayed(0,20);
